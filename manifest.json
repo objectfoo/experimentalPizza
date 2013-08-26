@@ -1,0 +1,21 @@
+{
+    "manifest_version": 2,
+
+    "name": "Mr Wizard plays w/css",
+    "description": "Y U BREAK TEH STYLEZ?",
+    "version": "1.0",
+
+    "permissions": [
+        "activeTab"
+    ],
+
+    "background": {
+        "scripts": ["script.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_title": "Wizard",
+        "default_icon": "eek.gif"
+    }
+
+}
