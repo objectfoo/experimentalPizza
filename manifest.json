@@ -9,8 +9,13 @@
         "tabs", "*://*/*"
     ],
 
+    "content_scripts": [{
+            "matches": ["*://*/*"],
+            "js": ["content.js"]
+    }],
+
     "background": {
-        "scripts": ["script.js"],
+        "scripts": ["background.js"],
         "persistent": false
     },
     "browser_action": {
