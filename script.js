@@ -1,21 +1,22 @@
-// Called when the user clicks on the browser action icon.
+/*global chrome*/ /*jshint eqnull: true*/
+'use strict';
+
 var active = {};
 
-function existy(val) {return val != null;}
-function truthy(val) {return val !== false && existy(val);}
-function tabHasPizza(tabId) {return truthy(active[tabId]);}
-
+function existy(val) { return val != null; }
+function truthy(val) {return val !== false && existy(val); }
+function tabHasPizza(tabId) {return truthy(active[tabId]); }
 
 function addPizza(tabId) {
     active[tabId] = true;
     chrome.tabs.executeScript({code: 'document.body.classList.add("pizza")'});
-    chrome.browserAction.setIcon({tabId: tabId, path:"images/pizzaOn.png"});
+    chrome.browserAction.setIcon({tabId: tabId, path: "images/pizzaOn.png"});
 }
 
 function removePizza(tabId) {
     active[tabId] = false;
     chrome.tabs.executeScript({code: 'document.body.classList.remove("pizza")'});
-    chrome.browserAction.setIcon({tabId: tabId, path:"images/pizzaOff.png"});
+    chrome.browserAction.setIcon({tabId: tabId, path: "images/pizzaOff.png"});
 }
 
 function togglePizza(tab) {
