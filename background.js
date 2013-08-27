@@ -1,8 +1,12 @@
 /*global chrome*/
 (function () {
-    'use strict';
+    "use strict";
 
-    var active = {};
+    var active = {},
+        ADD_PIZZA = "document.body.classList.add('pizza')",
+        REM_PIZZA = "document.body.classList.remove('pizza')",
+        IMG_ON    = "images/pizzaOn.png",
+        IMG_OFF   = "images/pizzaOff.png";
 
     function existy(val) {
         /*jshint eqnull: true*/
@@ -19,28 +23,36 @@
 
     function addPizza(tabId) {
         active[tabId] = true;
-        chrome.tabs.executeScript({code: 'document.body.classList.add("pizza")'});
-        chrome.browserAction.setIcon({tabId: tabId, path: "images/pizzaOn.png"});
+        chrome.tabs.executeScript({code: ADD_PIZZA});
+        chrome.browserAction.setIcon({tabId: tabId, path: IMG_ON});
     }
 
     function removePizza(tabId) {
         active[tabId] = false;
-        chrome.tabs.executeScript({code: 'document.body.classList.remove("pizza")'});
-        chrome.browserAction.setIcon({tabId: tabId, path: "images/pizzaOff.png"});
+        chrome.tabs.executeScript({code: REM_PIZZA});
+        chrome.browserAction.setIcon({tabId: tabId, path: IMG_OFF});
     }
 
     function togglePizza(tab) {
-        if (tabHasPizza(tab.id))
+        if (tabHasPizza(tab.id)) {
             removePizza(tab.id);
-        else
+        }
+        else {
             addPizza(tab.id);
+        }
+    }
+
+    function onTabUpdateComplete(tabId, changeInfo) {
+        if (changeInfo.status === "complete" && tabHasPizza(tabId)) {
+            addPizza(tabId);
+        }
+    }
+
+    function onTabRemoved(tabId) {
+        return truthy(active[tabId]) && delete active[tabId];
     }
 
     chrome.browserAction.onClicked.addListener(togglePizza);
-
-    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-        if (changeInfo.status === 'complete' && tabHasPizza(tabId)) {
-            addPizza(tabId);
-        }
-    });
+    chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
+    chrome.tabs.onRemoved.addListener(onTabRemoved);
 })();
