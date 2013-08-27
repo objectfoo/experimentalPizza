@@ -1,30 +1,28 @@
 // Called when the user clicks on the browser action icon.
 var active = {};
 
-function existy(val) { return val != null; }
-function truthy(val) { return val !== false && existy(val); }
-function tabHasPizza(tabId) { return truthy(active[tabId]); }
+function existy(val) {return val != null;}
+function truthy(val) {return val !== false && existy(val);}
+function tabHasPizza(tabId) {return truthy(active[tabId]);}
 
 
 function addPizza(tabId) {
     active[tabId] = true;
-    chrome.tabs.executeScript({ code: 'document.body.classList.add("pizza")' });
+    chrome.tabs.executeScript({code: 'document.body.classList.add("pizza")'});
     chrome.browserAction.setIcon({tabId: tabId, path:"images/pizzaOn.png"});
 }
 
 function removePizza(tabId) {
     active[tabId] = false;
-    chrome.tabs.executeScript({ code: 'document.body.classList.remove("pizza")' });
+    chrome.tabs.executeScript({code: 'document.body.classList.remove("pizza")'});
     chrome.browserAction.setIcon({tabId: tabId, path:"images/pizzaOff.png"});
 }
 
 function togglePizza(tab) {
-    if (tabHasPizza(tab.id)) {
+    if (tabHasPizza(tab.id))
         removePizza(tab.id);
-    }
-    else {
+    else
         addPizza(tab.id);
-    }
 }
 
 chrome.browserAction.onClicked.addListener(togglePizza);
