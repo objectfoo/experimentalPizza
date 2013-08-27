@@ -38,10 +38,9 @@
 
     chrome.browserAction.onClicked.addListener(togglePizza);
 
-    chrome.runtime.onMessage.addListener(function(msg, sender) {
-
-        if (msg.iCanHazPizza && tabHasPizza(sender.tab.id)) {
-            addPizza(sender.tab.id);
+    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+        if (changeInfo.status === 'complete' && tabHasPizza(tabId)) {
+            addPizza(tabId);
         }
     });
 })();
