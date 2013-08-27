@@ -6,7 +6,7 @@
     "version": "1.0",
 
     "permissions": [
-        "activeTab"
+        "tabs", "http://*/*"
     ],
 
     "background": {
@@ -15,7 +15,6 @@
     },
     "browser_action": {
         "default_title": "Wizard",
-        "default_icon": "eek.gif"
+        "default_icon": "images/pizzaOff.png"
     }
-
 }

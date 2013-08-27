@@ -1,19 +1,24 @@
 // Called when the user clicks on the browser action icon.
-var active = false,
-    pizza = 'pizza';
+var active = false;
 
 function addPizza() {
     active = true;
-    document.body.classList.add(pizza);
+    chrome.tabs.executeScript({
+        code: 'document.body.classList.add("pizza")'
+    });
+    chrome.browserAction.setIcon({path:"images/pizzaOn.png"});
 }
 
 function removePizza() {
     active = false;
-    document.body.classList.remove(pizza);
+    chrome.tabs.executeScript({
+        code: 'document.body.classList.remove("pizza")'
+    });
+    chrome.browserAction.setIcon({path:"images/pizzaOff.png"});
 }
 
-function togglePizza() {
-    if (active) {
+function togglePizza(hasPizza) {
+    if (!active) {
         addPizza();
     } else {
         removePizza();
