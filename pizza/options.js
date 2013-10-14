@@ -24,7 +24,7 @@ function activateToggle() {
 	toggleActionData.classList.remove(CSS_IS_NOT_SELECTED);
 }
 
-function selectOption(e) {
+function optionsChanged(e) {
 	var target = e.target;
 
 	if (target.nodeName !== "INPUT") return;
@@ -55,7 +55,7 @@ function init() {
 	swapActionData = $("#swapActionData");
 	bg.pizzaStore.load(initView);
 
-	$("#settings").addEventListener("change", selectOption);
+	$("body").addEventListener("change", optionsChanged);
 }
 
 addEventListener("DOMContentLoaded", init);
