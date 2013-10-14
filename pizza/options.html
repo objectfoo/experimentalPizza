@@ -2,12 +2,9 @@
 <title>Pizza Options</title>
 
 <style>
-	body {
-		background-color: #f0f0f0;
-	}
-	.is-not-selected {
-		display: none;
-	}
+	body { background-color: #f0f0f0; }
+	.modeOptions { display: none; }
+	.is-selected { display: block; }
 </style>
 
 
@@ -26,12 +23,12 @@
 
 <h2>Class Names</h2>
 
-<p id="toggleActionData">
+<p id="toggleActionData" class="modeOptions">
 	<label for="toggleClass">Class Name for Toggle Mode</label>
 	<input id="toggleClass" type="text">
 </p>
 
-<div id="swapActionData">
+<div id="swapActionData" class="modeOptions">
 	<p>
 		<label for="swapClassA">Class name for Mode A</label>
 		<input id="swapClassA" type="text">
