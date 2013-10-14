@@ -61,7 +61,9 @@
 	}
 
 	function onTabRemoved(tabId) {
-		return truthy(activeTabs[tabId]) && delete activeTabs[tabId];
+		if (truthy(activeTabs[tabId])) {
+			delete activeTabs[tabId];
+		}
 	}
 
 	/*
