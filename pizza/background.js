@@ -1,58 +1,83 @@
 /*global chrome*/
-(function () {
-    "use strict";
+(function (pizzaStore) {
+	"use strict";
 
-    var active = {},
-        ADD_PIZZA = "document.body.classList.add('pizza')",
-        REM_PIZZA = "document.body.classList.remove('pizza')",
-        IMG_ON    = "images/pizzaOn.png",
-        IMG_OFF   = "images/pizzaOff.png";
+	var activeTabs = {},
+		settings,
 
-    function existy(val) {
-        /*jshint eqnull: true*/
-        return val != null;
-    }
+		executeScript = chrome.tabs.executeScript,
+		setIcon = chrome.browserAction.setIcon,
 
-    function truthy(val) {
-        return val !== false && existy(val);
-    }
+		ADD_PIZZA = "document.body.classList.add(\"pizza\")",
+		REM_PIZZA = "document.body.classList.remove(\"pizza\")",
+		IMG_ON    = "images/pizzaOn.png",
+		IMG_OFF   = "images/pizzaOff.png",
 
-    function tabHasPizza(tabId) {
-        return truthy(active[tabId]);
-    }
+		defaults = {
+			version: "0.25",
+			mode: "toggle",
+			toggleClass: "pizza",
+			swapClassA: "SplitTestA",
+			swapClassB: "SplitTestB"
+		};
 
-    function addPizza(tabId) {
-        active[tabId] = true;
-        chrome.tabs.executeScript({code: ADD_PIZZA});
-        chrome.browserAction.setIcon({tabId: tabId, path: IMG_ON});
-    }
+	function existy(val) { /*jshint eqnull: true*/ return val != null; }
+	function truthy(val) { return val !== false && existy(val); }
+	function isTabLoaded(obj) { return obj.status === "complete"; }
 
-    function removePizza(tabId) {
-        active[tabId] = false;
-        chrome.tabs.executeScript({code: REM_PIZZA});
-        chrome.browserAction.setIcon({tabId: tabId, path: IMG_OFF});
-    }
+	function isClassAActive(tabId) {
+		return truthy(activeTabs[tabId]);
+	}
 
-    function togglePizza(tab) {
-        if (tabHasPizza(tab.id)) {
-            removePizza(tab.id);
-        }
-        else {
-            addPizza(tab.id);
-        }
-    }
+	function addPizza(tabId) {
+		activeTabs[tabId] = true;
+		executeScript({code: ADD_PIZZA});
+		setIcon({tabId: tabId, path: IMG_ON});
+	}
 
-    function onTabUpdateComplete(tabId, changeInfo) {
-        if (changeInfo.status === "complete" && tabHasPizza(tabId)) {
-            addPizza(tabId);
-        }
-    }
+	function removePizza(tabId) {
+		activeTabs[tabId] = false;
+		executeScript({code: REM_PIZZA});
+		setIcon({tabId: tabId, path: IMG_OFF});
+	}
 
-    function onTabRemoved(tabId) {
-        return truthy(active[tabId]) && delete active[tabId];
-    }
+	function togglePizza(tab) {
+		// pizzaStore.load(function (items) {
+		// 	console.log(items);
+		// });
 
-    chrome.browserAction.onClicked.addListener(togglePizza);
-    chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
-    chrome.tabs.onRemoved.addListener(onTabRemoved);
-})();
+		if (isClassAActive(tab.id)) {
+			removePizza(tab.id);
+		}
+		else {
+			addPizza(tab.id);
+		}
+	}
+
+	function onTabUpdateComplete(tabId, changeInfo) {
+		if (isTabLoaded(changeInfo) && isClassAActive(tabId)) {
+			addPizza(tabId);
+		}
+	}
+
+	function onTabRemoved(tabId) {
+		return truthy(activeTabs[tabId]) && delete activeTabs[tabId];
+	}
+
+	/*
+	setup & go
+	************************************************************************** */
+	pizzaStore.load(function (store) {
+		if (!store || !store.version || store.version !== defaults.version) {
+			pizzaStore.setStore(defaults);
+			settings = defaults;
+		} else {
+			settings = store;
+		}
+
+		chrome.browserAction.onClicked.addListener(togglePizza);
+		chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
+		chrome.tabs.onRemoved.addListener(onTabRemoved);
+	});
+
+})(window.pizzaStore);
