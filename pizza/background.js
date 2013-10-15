@@ -33,7 +33,7 @@
 	}
 
 	function togglePizza(tab) {
-		// pizzaStore.load(function (items) {
+		// pizzaStore.loadAll(function (items) {
 		// 	console.log(items);
 		// });
 
@@ -61,10 +61,7 @@
 	setup & go
 	************************************************************************** */
 	pizzaStore.loadAll(function (store) {
-		if (!store ||
-				!store.version ||
-				parseFloat(store.version) < pizzaStore.version)
-		{
+		if (!store || !store.version || parseFloat(store.version) < pizzaStore.version) {
 			pizzaStore.setDefaults();
 		}
 
