@@ -2,9 +2,30 @@
 <title>Pizza Options</title>
 
 <style>
-	body { background-color: #f0f0f0; }
-	.modeOptions { display: none; }
-	.is-selected { display: block; }
+@-webkit-keyframes fade {
+	0%   { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+@keyframes fade {
+	0%   { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+body {
+	background-color: #f0f0f0;
+	-webkit-animation: fade 500ms;
+	animation: fade 500ms;
+}
+
+.modeOptions { display: none; }
+
+.is-selected {
+	display: block;
+
+	-webkit-animation: fade 500ms;
+	animation: fade 500ms;
+}
 </style>
 
 

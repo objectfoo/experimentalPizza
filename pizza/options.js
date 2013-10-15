@@ -2,10 +2,10 @@
 "use strict";
 
 var toggleActionData,
-		swapActionData,
-		bg = chrome.extension.getBackgroundPage(),
+	swapActionData,
+	bg = chrome.extension.getBackgroundPage(),
 
-		CSS_IS_SELECTED = "is-selected";
+	CSS_IS_SELECTED = "is-selected";
 
 function setInputChecked(elementId) {
 	$(elementId).setAttribute("checked", true);
@@ -15,13 +15,13 @@ function $(expr, con) { return (con || document).querySelector(expr); }
 
 
 function activateSwap() {
-	toggleActionData.classList.add(CSS_IS_SELECTED);
-	swapActionData.classList.remove(CSS_IS_SELECTED);
+	toggleActionData.classList.remove(CSS_IS_SELECTED);
+	swapActionData.classList.add(CSS_IS_SELECTED);
 }
 
 function activateToggle() {
-	swapActionData.classList.add(CSS_IS_SELECTED);
-	toggleActionData.classList.remove(CSS_IS_SELECTED);
+	swapActionData.classList.remove(CSS_IS_SELECTED);
+	toggleActionData.classList.add(CSS_IS_SELECTED);
 }
 
 function optionsChanged(e) {
