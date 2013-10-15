@@ -3,7 +3,6 @@
 	"use strict";
 
 	var activeTabs = {},
-		settings,
 
 		executeScript = chrome.tabs.executeScript,
 		setIcon = chrome.browserAction.setIcon,
@@ -11,15 +10,7 @@
 		ADD_PIZZA = "document.body.classList.add(\"pizza\")",
 		REM_PIZZA = "document.body.classList.remove(\"pizza\")",
 		IMG_ON    = "images/pizzaOn.png",
-		IMG_OFF   = "images/pizzaOff.png",
-
-		defaults = {
-			version: "0.25",
-			mode: "toggle",
-			toggleClass: "pizza",
-			swapClassA: "SplitTestA",
-			swapClassB: "SplitTestB"
-		};
+		IMG_OFF   = "images/pizzaOff.png";
 
 	function existy(val) { /*jshint eqnull: true*/ return val != null; }
 	function truthy(val) { return val !== false && existy(val); }
@@ -69,12 +60,12 @@
 	/*
 	setup & go
 	************************************************************************** */
-	pizzaStore.load(function (store) {
-		if (!store || !store.version || store.version !== defaults.version) {
-			pizzaStore.setStore(defaults);
-			settings = defaults;
-		} else {
-			settings = store;
+	pizzaStore.loadAll(function (store) {
+		if (!store ||
+				!store.version ||
+				parseFloat(store.version) < pizzaStore.version)
+		{
+			pizzaStore.setDefaults();
 		}
 
 		chrome.browserAction.onClicked.addListener(togglePizza);
