@@ -39,7 +39,7 @@ function initView(settings) {
 	// console.log(settings.mode);
 
 	setInputChecked(settings.mode);
-	showOptionsForId(settings.mode);	
+	showOptionsForId(settings.mode);
 	$("#toggleClass").value = settings.toggleClass;
 	$("#swapClassA").value = settings.swapClassA;
 	$("#swapClassB").value = settings.swapClassB;

@@ -14,40 +14,70 @@
 
 	function existy(val) { /*jshint eqnull: true*/ return val != null; }
 	function truthy(val) { return val !== false && existy(val); }
-	function isTabLoaded(obj) { return obj.status === "complete"; }
 
 	function isClassAActive(tabId) {
 		return truthy(activeTabs[tabId]);
 	}
 
-	function addPizza(tabId) {
-		activeTabs[tabId] = true;
+	function addToggleClass(tabId) {
 		executeScript({code: ADD_PIZZA});
 		setIcon({tabId: tabId, path: IMG_ON});
 	}
 
-	function removePizza(tabId) {
-		activeTabs[tabId] = false;
+	function removeToggleClass(tabId) {
 		executeScript({code: REM_PIZZA});
 		setIcon({tabId: tabId, path: IMG_OFF});
 	}
 
-	function togglePizza(tab) {
-		// pizzaStore.loadAll(function (items) {
-		// 	console.log(items);
-		// });
-
-		if (isClassAActive(tab.id)) {
-			removePizza(tab.id);
-		}
-		else {
-			addPizza(tab.id);
+	function toggleOnTab(tabId) {
+		if (truthy(activeTabs[tabId])) {
+			activeTabs[tabId] = false;
+			removeToggleClass(tabId);
+		} else {
+			activeTabs[tabId] = true;
+			addToggleClass(tabId);
 		}
 	}
 
+	function swapOnTab(tabId) {}
+
+	function onIconClicked(tab) {
+		chrome.permissions.contains({origins: [tab.url]}, function (allowed) {
+			if (allowed) {
+				pizzaStore.load("mode", function (item) {
+
+					if (item.mode ===  "toggle") {
+						toggleOnTab(tab.id);
+					}
+					else if (item.mode === "swap") {
+
+					}
+				});
+			}
+		});
+	}
+
 	function onTabUpdateComplete(tabId, changeInfo) {
-		if (isTabLoaded(changeInfo) && isClassAActive(tabId)) {
-			addPizza(tabId);
+
+		// this active tabs call keeps us out of chrome:// URLS
+		// chrome throws an exception accessing tabs of chrome:// URL
+		if (changeInfo.status === "complete" && truthy(activeTabs[tabId])) {
+			chrome.tabs.get(tabId, function (tab) {
+				chrome.permissions.contains({origins: [tab.url]}, function(allowed) {
+					if (allowed) {
+						pizzaStore.load("mode", function (item) {
+							if (item.mode === "toggle") {
+								if (truthy(activeTabs[tabId])) {
+									addToggleClass(tabId);
+								}
+								else {
+									removeToggleClass(tabId);
+								}
+							}
+						});
+					}
+				});
+			});
 		}
 	}
 
@@ -65,7 +95,7 @@
 			pizzaStore.setDefaults();
 		}
 
-		chrome.browserAction.onClicked.addListener(togglePizza);
+		chrome.browserAction.onClicked.addListener(onIconClicked);
 		chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
 		chrome.tabs.onRemoved.addListener(onTabRemoved);
 	});
