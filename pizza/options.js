@@ -36,8 +36,6 @@ function onFormChange(e) {
 }
 
 function initView(settings) {
-	// console.log(settings.mode);
-
 	setInputChecked(settings.mode);
 	showOptionsForId(settings.mode);
 	$("#toggleClass").value = settings.toggleClass;
@@ -46,9 +44,6 @@ function initView(settings) {
 }
 
 function init() {
-	// bg.pizzaStore.loadAll(function (items) {
-	// 	console.log(items);
-	// });
 	toggleActionData = $("#toggleActionData");
 	swapActionData = $("#swapActionData");
 	bg.pizzaStore.load(["mode", "toggleClass", "swapClassA", "swapClassB"], initView);

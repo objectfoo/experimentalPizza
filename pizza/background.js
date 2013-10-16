@@ -43,41 +43,44 @@
 
 	function onIconClicked(tab) {
 		chrome.permissions.contains({origins: [tab.url]}, function (allowed) {
-			if (allowed) {
-				pizzaStore.load("mode", function (item) {
+			if (!allowed) return;
 
-					if (item.mode ===  "toggle") {
-						toggleOnTab(tab.id);
-					}
-					else if (item.mode === "swap") {
+			pizzaStore.load("mode", function (item) {
+				if (item.mode ===  "toggle") {
+					toggleOnTab(tab.id);
+				}
+				else if (item.mode === "swap") {
 
-					}
-				});
+				}
+			});
+		});
+	}
+
+	function doIfPermissionForUrl(url, callback) {
+		chrome.permissions.contains({origins: [url]}, function (allowed) {
+			if (allowed) callback();
+		});
+	}
+
+	function updateClassOnTab() {
+		pizzaStore.load("mode", function (item) {
+			if (item.mode === "toggle") {
+				if (truthy(activeTabs[tabId])) {
+					addToggleClass(tabId);
+				}
+				else {
+					removeToggleClass(tabId);
+				}
+			}
+			else {
+				// swap mode
 			}
 		});
 	}
 
-	function onTabUpdateComplete(tabId, changeInfo) {
-
-		// this active tabs call keeps us out of chrome:// URLS
-		// chrome throws an exception accessing tabs of chrome:// URL
+	function onTabUpdateComplete(tabId, changeInfo, tab) {
 		if (changeInfo.status === "complete" && truthy(activeTabs[tabId])) {
-			chrome.tabs.get(tabId, function (tab) {
-				chrome.permissions.contains({origins: [tab.url]}, function(allowed) {
-					if (allowed) {
-						pizzaStore.load("mode", function (item) {
-							if (item.mode === "toggle") {
-								if (truthy(activeTabs[tabId])) {
-									addToggleClass(tabId);
-								}
-								else {
-									removeToggleClass(tabId);
-								}
-							}
-						});
-					}
-				});
-			});
+			doIfPermissionForUrl(tab.url, updateClassOnTab);
 		}
 	}
 
