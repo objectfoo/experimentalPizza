@@ -7,26 +7,35 @@
 		executeScript = chrome.tabs.executeScript,
 		setIcon = chrome.browserAction.setIcon,
 
-		ADD_PIZZA = "document.body.classList.add(\"pizza\")",
-		REM_PIZZA = "document.body.classList.remove(\"pizza\")",
 		IMG_ON    = "images/pizzaOn.png",
-		IMG_OFF   = "images/pizzaOff.png";
+		IMG_OFF   = "images/pizzaOff.png",
+
+		addClass = makeClassListCmd("add"),
+		removeClass = makeClassListCmd("remove"),
+		toggleClass = makeClassListCmd("toggle");
 
 	function existy(val) { /*jshint eqnull: true*/ return val != null; }
 	function truthy(val) { return val !== false && existy(val); }
 
-	function isClassAActive(tabId) {
-		return truthy(activeTabs[tabId]);
+	function makeClassListCmd(fnStr) {
+		var base = "document.body.classList.";
+		return function (className) {
+			return [base, fnStr, "(\"", className, "\")" ].join("");
+		}
 	}
 
 	function addToggleClass(tabId) {
-		executeScript({code: ADD_PIZZA});
-		setIcon({tabId: tabId, path: IMG_ON});
+		pizzaStore.load("toggleClass", function (items) {
+			executeScript({code: addClass(items.toggleClass)});
+			setIcon({tabId: tabId, path: IMG_ON});
+		});
 	}
 
 	function removeToggleClass(tabId) {
-		executeScript({code: REM_PIZZA});
-		setIcon({tabId: tabId, path: IMG_OFF});
+		pizzaStore.load("toggleClass", function (items) {
+			executeScript({code: removeClass(items.toggleClass)});
+			setIcon({tabId: tabId, path: IMG_OFF});
+		});
 	}
 
 	function toggleOnTab(tabId) {
