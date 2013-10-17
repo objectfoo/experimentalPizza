@@ -11,88 +11,104 @@
 		IMG_OFF   = "images/pizzaOff.png",
 
 		addClass = makeClassListCmd("add"),
-		removeClass = makeClassListCmd("remove"),
-		toggleClass = makeClassListCmd("toggle");
+		removeClass = makeClassListCmd("remove");
+		// toggleClass = makeClassListCmd("toggle");
 
 	function existy(val) { /*jshint eqnull: true*/ return val != null; }
 	function truthy(val) { return val !== false && existy(val); }
 
+
+	/*
+	 * create injectable classList.XXX string
+	 ******************************************************************/
 	function makeClassListCmd(fnStr) {
 		var base = "document.body.classList.";
 		return function (className) {
-			return [base, fnStr, "(\"", className, "\")" ].join("");
-		}
+			return [base, fnStr, "(\"", className, "\");" ].join("");
+		};
 	}
 
-	function addToggleClass(tabId) {
-		pizzaStore.load("toggleClass", function (items) {
+
+	/*
+	 * inject addClass script into dom and set extension icon to on
+	 ******************************************************************/
+	function activateToggleForTab(tabId) {
+
+		function addClassTurnOnIcon(items) {
 			executeScript({code: addClass(items.toggleClass)});
 			setIcon({tabId: tabId, path: IMG_ON});
-		});
+		}
+
+		pizzaStore.load("toggleClass", addClassTurnOnIcon);
 	}
 
-	function removeToggleClass(tabId) {
-		pizzaStore.load("toggleClass", function (items) {
+
+	/*
+	 * inject removeclass script into dom and set extension icon to off
+	 ******************************************************************/
+	function deactiveToggleForTab(tabId) {
+
+		function removeClassTurnOffIcon(items) {
 			executeScript({code: removeClass(items.toggleClass)});
 			setIcon({tabId: tabId, path: IMG_OFF});
-		});
-	}
-
-	function toggleOnTab(tabId) {
-		if (truthy(activeTabs[tabId])) {
-			activeTabs[tabId] = false;
-			removeToggleClass(tabId);
-		} else {
-			activeTabs[tabId] = true;
-			addToggleClass(tabId);
 		}
+
+		pizzaStore.load("toggleClass", removeClassTurnOffIcon);
 	}
 
-	function swapOnTab(tabId) {}
 
+	/*
+	 * TODO: swapClassOnTab
+	 ******************************************************************/
+	// function swapClassOnTab(tabId) {}
+
+	/*
+	 *
+	 ******************************************************************/
 	function onIconClicked(tab) {
-		chrome.permissions.contains({origins: [tab.url]}, function (allowed) {
-			if (!allowed) return;
-
-			pizzaStore.load("mode", function (item) {
-				if (item.mode ===  "toggle") {
-					toggleOnTab(tab.id);
-				}
-				else if (item.mode === "swap") {
-
-				}
-			});
-		});
-	}
-
-	function doIfPermissionForUrl(url, callback) {
-		chrome.permissions.contains({origins: [url]}, function (allowed) {
-			if (allowed) callback();
-		});
-	}
-
-	function updateClassOnTab() {
 		pizzaStore.load("mode", function (item) {
-			if (item.mode === "toggle") {
-				if (truthy(activeTabs[tabId])) {
-					addToggleClass(tabId);
+
+			if (item.mode ===  "toggle") {
+
+				if (truthy(activeTabs[tab.id])) {
+					activeTabs[tab.id] = false;
+					deactiveToggleForTab(tab.id);
 				}
 				else {
-					removeToggleClass(tabId);
+					activeTabs[tab.id] = true;
+					activateToggleForTab(tab.id);
 				}
 			}
-			else {
-				// swap mode
+			else if (item.mode === "swap") {
+				// TODO: swap mode
 			}
 		});
 	}
 
-	function onTabUpdateComplete(tabId, changeInfo, tab) {
+
+	/*
+	 * When a tab is done updating (like on a refresh) add the class
+	 * to the page if it was on before the refresh
+	 ******************************************************************/
+	function onTabUpdateComplete(tabId, changeInfo) {
+
 		if (changeInfo.status === "complete" && truthy(activeTabs[tabId])) {
-			doIfPermissionForUrl(tab.url, updateClassOnTab);
+			pizzaStore.load("mode", function (item) {
+
+				if (item.mode === "toggle" && truthy(activeTabs[tabId])) {
+					activateToggleForTab(tabId);
+				}
+				else {
+					// TODO: swap mode
+				}
+			});
 		}
 	}
 
+
+	/*
+	 * if a tab is closed delete active tab record
+	 ******************************************************************/
 	function onTabRemoved(tabId) {
 		if (truthy(activeTabs[tabId])) {
 			delete activeTabs[tabId];
@@ -100,8 +116,8 @@
 	}
 
 	/*
-	setup & go
-	************************************************************************** */
+	 *setup & go
+	 ******************************************************************/
 	pizzaStore.loadAll(function (store) {
 		if (!store || !store.version || parseFloat(store.version) < pizzaStore.version) {
 			pizzaStore.setDefaults();
