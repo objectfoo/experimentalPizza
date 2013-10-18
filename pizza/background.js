@@ -34,12 +34,12 @@
 	 ******************************************************************/
 	function activateToggleForTab(tabId) {
 
-		function addClassTurnOnIcon(items) {
+		function toggleOn(items) {
 			executeScript({code: addClass(items.toggleClass)});
 			setIcon({tabId: tabId, path: IMG_ON});
 		}
 
-		pizzaStore.load("toggleClass", addClassTurnOnIcon);
+		pizzaStore.load("toggleClass", toggleOn);
 	}
 
 
@@ -48,12 +48,12 @@
 	 ******************************************************************/
 	function deactiveToggleForTab(tabId) {
 
-		function removeClassTurnOffIcon(items) {
+		function toggleOff(items) {
 			executeScript({code: removeClass(items.toggleClass)});
 			setIcon({tabId: tabId, path: IMG_OFF});
 		}
 
-		pizzaStore.load("toggleClass", removeClassTurnOffIcon);
+		pizzaStore.load("toggleClass", toggleOff);
 	}
 
 
