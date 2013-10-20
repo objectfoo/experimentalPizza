@@ -1,20 +1,26 @@
 {
-    "manifest_version": 2,
+	"manifest_version": 2,
 
-    "name": "Experimental Pizza",
-    "description": "Y U BREAK TEH STYLEZ?",
-    "version": "1.0",
+	"name": "Experimental Pizza",
+	"description": "Plugin to easily toggle a test body class",
+	"version": "1.1",
+	"options_page": "options.html",
 
-    "permissions": [
-        "tabs", "*://*/*"
-    ],
+	"permissions": [
+		"tabs",
+		"http://*/*",
+		"https://*/*",
+		"file:///*/*",
+		"storage"
+	],
 
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
-    "browser_action": {
-        "default_title": "body.pizza",
-        "default_icon": "images/pizzaOff.png"
-    }
+	"background": {
+		"scripts": ["pizzaStore.js", "background.js"],
+		"persistent": true
+	},
+
+	"browser_action": {
+		"default_title": "body.pizza",
+		"default_icon": "images/pizzaOff.png"
+	}
 }

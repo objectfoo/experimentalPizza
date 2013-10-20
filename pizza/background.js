@@ -1,58 +1,83 @@
 /*global chrome*/
-(function () {
-    "use strict";
+(function (pizzaStore) {
+	"use strict";
 
-    var active = {},
-        ADD_PIZZA = "document.body.classList.add('pizza')",
-        REM_PIZZA = "document.body.classList.remove('pizza')",
-        IMG_ON    = "images/pizzaOn.png",
-        IMG_OFF   = "images/pizzaOff.png";
+	var activeTabs = {},
 
-    function existy(val) {
-        /*jshint eqnull: true*/
-        return val != null;
-    }
+		executeScript = chrome.tabs.executeScript,
+		setIcon = chrome.browserAction.setIcon,
 
-    function truthy(val) {
-        return val !== false && existy(val);
-    }
+		IMG_ON    = "images/pizzaOn.png",
+		IMG_OFF   = "images/pizzaOff.png",
 
-    function tabHasPizza(tabId) {
-        return truthy(active[tabId]);
-    }
+		addClass = makeClassListCmd("add"),
+		removeClass = makeClassListCmd("remove");
 
-    function addPizza(tabId) {
-        active[tabId] = true;
-        chrome.tabs.executeScript({code: ADD_PIZZA});
-        chrome.browserAction.setIcon({tabId: tabId, path: IMG_ON});
-    }
+	function existy(val) { /*jshint eqnull: true*/ return val != null; }
+	function truthy(val) { return val !== false && existy(val); }
 
-    function removePizza(tabId) {
-        active[tabId] = false;
-        chrome.tabs.executeScript({code: REM_PIZZA});
-        chrome.browserAction.setIcon({tabId: tabId, path: IMG_OFF});
-    }
+	function makeClassListCmd(fnStr) {
+		var base = "document.body.classList.";
+		return function (className) {
+			return [base, fnStr, "(\"", className, "\");" ].join("");
+		};
+	}
 
-    function togglePizza(tab) {
-        if (tabHasPizza(tab.id)) {
-            removePizza(tab.id);
-        }
-        else {
-            addPizza(tab.id);
-        }
-    }
+	function activateToggleForTab(tabId) {
 
-    function onTabUpdateComplete(tabId, changeInfo) {
-        if (changeInfo.status === "complete" && tabHasPizza(tabId)) {
-            addPizza(tabId);
-        }
-    }
+		function toggleOn(items) {
+			executeScript({code: addClass(items.toggleClass)});
+			setIcon({tabId: tabId, path: IMG_ON});
+		}
 
-    function onTabRemoved(tabId) {
-        return truthy(active[tabId]) && delete active[tabId];
-    }
+		pizzaStore.load("toggleClass", toggleOn);
+	}
 
-    chrome.browserAction.onClicked.addListener(togglePizza);
-    chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
-    chrome.tabs.onRemoved.addListener(onTabRemoved);
-})();
+	function deactiveToggleForTab(tabId) {
+
+		function toggleOff(items) {
+			executeScript({code: removeClass(items.toggleClass)});
+			setIcon({tabId: tabId, path: IMG_OFF});
+		}
+
+		pizzaStore.load("toggleClass", toggleOff);
+	}
+
+	function onIconClicked(tab) {
+
+		// do nothing on pages that have protocol http, https or file
+		if (!/^(https?|file):\/{2,3}/.test(tab.url)) {
+			return;
+		}
+
+		if (truthy(activeTabs[tab.id])) {
+			activeTabs[tab.id] = false;
+			deactiveToggleForTab(tab.id);
+		}
+		else {
+			activeTabs[tab.id] = true;
+			activateToggleForTab(tab.id);
+		}
+	}
+
+	function onTabUpdateComplete(tabId, changeInfo) {
+		if (changeInfo.status === "complete" && truthy(activeTabs[tabId])) {
+			activateToggleForTab(tabId);
+		}
+	}
+
+	function onTabRemoved(tabId) {
+		delete activeTabs[tabId];
+	}
+
+	pizzaStore.loadAll(function (store) {
+		if (!store || !store.version || parseFloat(store.version) !== pizzaStore.version) {
+			pizzaStore.setDefaults();
+		}
+
+		chrome.browserAction.onClicked.addListener(onIconClicked);
+		chrome.tabs.onUpdated.addListener(onTabUpdateComplete);
+		chrome.tabs.onRemoved.addListener(onTabRemoved);
+	});
+
+})(window.pizzaStore);

@@ -1,11 +1,9 @@
-# Experimental pizza
+# Features under development
 
-Chrome extension that toggles a body class of 'pizza' in a tab
+* ability to change classname in options page
+* swap mode, swap 2 classnames on the body instead of just toggle a single one on and off
+* options page
 
-so cabe can stop breaking the build
+## Bug
 
-pizza directory is what get's packed into the crx.
-
-## install
-
-enter `chrome://extensions/` into omnibox, drag pizza.crx into the MIDDLE of the extensions page, a message should show in the middle of that page that says 'Drop To Install'... so drop to install.
+* When changing classname go through tabs and swap old className for new one ...
