@@ -4,7 +4,7 @@
 
 	var store = chrome.storage.local,
 		DEFAULTS = {
-			// manifest version in cases I want to add stuff later
+			// manifest version in case I want to add stuff later
 			version: 1,
 			toggleClass: "pizza"
 		};
