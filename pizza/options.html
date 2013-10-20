@@ -2,66 +2,66 @@
 <title>Pizza Options</title>
 
 <style>
-@-webkit-keyframes fade {
-	0%   { opacity: 0; }
-	100% { opacity: 1; }
-}
-
-@keyframes fade {
-	0%   { opacity: 0; }
-	100% { opacity: 1; }
-}
-
 body {
+	margin: 3em 2em 6em;
+	max-width: 600px;
+
 	background-color: #f0f0f0;
-	-webkit-animation: fade 500ms;
-	animation: fade 500ms;
+	color: #333;
+	font-family: "Helvetica Neue", sans-serif;
+	font-weight: 300;
 }
 
-.modeOptions { display: none; }
+* 		{ box-sizing: border-box; }
 
-.is-selected {
-	display: block;
-
-	-webkit-animation: fade 500ms;
-	animation: fade 500ms;
+button {
+	background-image: -webkit-linear-gradient(#4387FD, #4683EA);
+	background-image: linear-gradient(#4387FD, #4683EA);
+	border: none;
+	border-radius: 2px;
+	color: #fff;
+	cursor: pointer;
+	font-size: 14px;
+	height: 30px;
+	text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.7);
+	vertical-align: bottom;
+	width: 90px;
 }
+
+button:hover, button:focus {
+	background-image: -webkit-linear-gradient(#659DFD, #3361AF);
+	background-image: linear-gradient(#659DFD, #3361AF);
+}
+
+h1,
+label { font-weight: 400; }
+
+p,
+h1,
+label { margin: 0 0 16px 0; }
+
+label { display: block; }
+
+input {
+	border: 1px solid gray;
+	color: #333;
+	font-size: 16px;
+	height: 30px;
+	padding: 4px;
+}
+
+.saving            { display: none; }
+.fake-save .saving { display: block; }
+.fake-save .save   { display: none; }
 </style>
 
+<h1>Experimental Pizza</h1>
 
-<h2>Mode</h2>
+<p>Toggle a class name on the body element with a click.</p>
 
-<p>
-	<label for="toggle">Toggle class name on and off</label>
-	<input id="toggle" name="action" type="radio">
-</p>
+<label for="toggleClass">Class Name to Toggle</label>
+<input id="toggleClass" type="text">
 
-<p>
-	<label for="swap">Swap class A for B</label>
-	<input id="swap" name="action" type="radio">
-</p>
-
-
-<h2>Class Names</h2>
-
-<p id="toggleActionData" class="modeOptions">
-	<label for="toggleClass">Class Name for Toggle Mode</label>
-	<input id="toggleClass" type="text">
-</p>
-
-<div id="swapActionData" class="modeOptions">
-	<p>
-		<label for="swapClassA">Class name for Mode A</label>
-		<input id="swapClassA" type="text">
-
-	</p>
-
-	<p>
-		<label for="swapClassB">Class name for Mode B</label>
-		<input id="swapClassB" type="text">
-	</p>
-</div>
-
-<button>Save</button>
+<button><span class="save">Save</span><span class="saving">Saving...</span></button>
 
 <script src="options.js"></script>

@@ -4,11 +4,9 @@
 
 	var store = chrome.storage.local,
 		DEFAULTS = {
-			version: 3.5,
-			mode: "toggle",
-			toggleClass: "pizza",
-			swapClassA: "SplitTestA",
-			swapClassB: "SplitTestB"
+			// manifest version in cases I want to add stuff later
+			version: 1,
+			toggleClass: "pizza"
 		};
 
 	function loadAll(callback) {
@@ -24,10 +22,10 @@
 		store.set(DEFAULTS, callback);
 	}
 
-	function set(key, value) {
+	function set(key, value, callback) {
 		var cfg = {};
 		cfg[key] = value;
-		store.set(cfg);
+		store.set(cfg, callback);
 	}
 
 	window.pizzaStore = {

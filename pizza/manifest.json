@@ -3,12 +3,13 @@
 
 	"name": "Experimental Pizza",
 	"description": "Plugin to easily toggle a test body class",
-	"version": "1.2",
+	"version": "1.1",
 	"options_page": "options.html",
 
 	"permissions": [
 		"tabs",
-		"*://*/*",
+		"http://*/*",
+		"https://*/*",
 		"file:///*/*",
 		"storage"
 	],

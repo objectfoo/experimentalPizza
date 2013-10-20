@@ -12,15 +12,10 @@
 
 		addClass = makeClassListCmd("add"),
 		removeClass = makeClassListCmd("remove");
-		// toggleClass = makeClassListCmd("toggle");
 
 	function existy(val) { /*jshint eqnull: true*/ return val != null; }
 	function truthy(val) { return val !== false && existy(val); }
 
-
-	/*
-	 * create injectable classList.XXX string
-	 ******************************************************************/
 	function makeClassListCmd(fnStr) {
 		var base = "document.body.classList.";
 		return function (className) {
@@ -28,10 +23,6 @@
 		};
 	}
 
-
-	/*
-	 * inject addClass script into dom and set extension icon to on
-	 ******************************************************************/
 	function activateToggleForTab(tabId) {
 
 		function toggleOn(items) {
@@ -42,10 +33,6 @@
 		pizzaStore.load("toggleClass", toggleOn);
 	}
 
-
-	/*
-	 * inject removeclass script into dom and set extension icon to off
-	 ******************************************************************/
 	function deactiveToggleForTab(tabId) {
 
 		function toggleOff(items) {
@@ -56,70 +43,35 @@
 		pizzaStore.load("toggleClass", toggleOff);
 	}
 
-
-	/*
-	 * TODO: swapClassOnTab
-	 ******************************************************************/
-	// function swapClassOnTab(tabId) {}
-
-	/*
-	 *
-	 ******************************************************************/
 	function onIconClicked(tab) {
-		pizzaStore.load("mode", function (item) {
 
-			if (item.mode ===  "toggle") {
+		// do nothing on pages that have protocol http, https or file
+		if (!/^(https?|file):\/{2,3}/.test(tab.url)) {
+			return;
+		}
 
-				if (truthy(activeTabs[tab.id])) {
-					activeTabs[tab.id] = false;
-					deactiveToggleForTab(tab.id);
-				}
-				else {
-					activeTabs[tab.id] = true;
-					activateToggleForTab(tab.id);
-				}
-			}
-			else if (item.mode === "swap") {
-				// TODO: swap mode
-			}
-		});
+		if (truthy(activeTabs[tab.id])) {
+			activeTabs[tab.id] = false;
+			deactiveToggleForTab(tab.id);
+		}
+		else {
+			activeTabs[tab.id] = true;
+			activateToggleForTab(tab.id);
+		}
 	}
 
-
-	/*
-	 * When a tab is done updating (like on a refresh) add the class
-	 * to the page if it was on before the refresh
-	 ******************************************************************/
 	function onTabUpdateComplete(tabId, changeInfo) {
-
 		if (changeInfo.status === "complete" && truthy(activeTabs[tabId])) {
-			pizzaStore.load("mode", function (item) {
-
-				if (item.mode === "toggle" && truthy(activeTabs[tabId])) {
-					activateToggleForTab(tabId);
-				}
-				else {
-					// TODO: swap mode
-				}
-			});
+			activateToggleForTab(tabId);
 		}
 	}
 
-
-	/*
-	 * if a tab is closed delete active tab record
-	 ******************************************************************/
 	function onTabRemoved(tabId) {
-		if (truthy(activeTabs[tabId])) {
-			delete activeTabs[tabId];
-		}
+		delete activeTabs[tabId];
 	}
 
-	/*
-	 *setup & go
-	 ******************************************************************/
 	pizzaStore.loadAll(function (store) {
-		if (!store || !store.version || parseFloat(store.version) < pizzaStore.version) {
+		if (!store || !store.version || parseFloat(store.version) !== pizzaStore.version) {
 			pizzaStore.setDefaults();
 		}
 
