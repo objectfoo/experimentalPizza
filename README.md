@@ -1,9 +1,7 @@
-# Features under development
+Chrome extension that toggles a customizable body class in a tab
 
-* ability to change classname in options page
-* swap mode, swap 2 classnames on the body instead of just toggle a single one on and off
-* options page
+-- changelog
 
-## Bug
+1.1 added ability to customize classname via an options page.
 
-* When changing classname go through tabs and swap old className for new one ...
+1.0 worked.
