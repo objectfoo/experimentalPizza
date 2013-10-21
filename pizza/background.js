@@ -45,7 +45,7 @@
 
 	function onIconClicked(tab) {
 
-		// do nothing on pages that have protocol http, https or file
+		// do nothing on pages that don't have protocol http, https or file
 		if (!/^(https?|file):\/{2,3}/.test(tab.url)) {
 			return;
 		}
