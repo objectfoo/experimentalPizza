@@ -10,7 +10,6 @@
 		"tabs",
 		"http://*/*",
 		"https://*/*",
-		"file:///*/*",
 		"storage"
 	],
 
