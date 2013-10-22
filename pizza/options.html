@@ -20,6 +20,7 @@ button {
 	border: none;
 	color: #fff;
 	cursor: pointer;
+	display: block;
 	font-size: 14px;
 	height: 30px;
 	text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.7);
@@ -37,7 +38,8 @@ label { font-weight: 400; }
 
 p,
 h1,
-label { margin: 0 0 16px 0; }
+label,
+button { margin: 16px 0; }
 
 label { display: block; }
 
@@ -47,6 +49,7 @@ input {
 	font-size: 16px;
 	height: 30px;
 	padding: 4px;
+	margin: 0;
 }
 
 .saving            { display: none; }
@@ -60,6 +63,9 @@ input {
 
 <label for="toggleClass">Class Name to Toggle</label>
 <input id="toggleClass" type="text">
+
+<label for="elementExpression">Element Expression</label>
+<input id="elementExpression" type="text">
 
 <button><span class="save">Save</span><span class="saving">Saving...</span></button>
 
