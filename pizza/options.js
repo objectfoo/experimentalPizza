@@ -21,12 +21,14 @@ function fakeSave() {
 
 function initView(settings) {
 	$("#toggleClass").value = settings.toggleClass;
+	$("#elementExpression").value = settings.elementExpression;
+
 	$bd.addEventListener("change", onFormChange);
 	$("button").addEventListener("click", fakeSave);
 }
 
 function init() {
-	pizzaStore.load(["toggleClass"], initView);
+	pizzaStore.load(["toggleClass", "elementExpression"], initView);
 }
 
 addEventListener("DOMContentLoaded", init);

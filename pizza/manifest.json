@@ -3,7 +3,7 @@
 
 	"name": "Experimental Pizza",
 	"description": "Plugin to easily toggle a test body class",
-	"version": "1.1",
+	"version": "1.2",
 	"options_page": "options.html",
 
 	"permissions": [

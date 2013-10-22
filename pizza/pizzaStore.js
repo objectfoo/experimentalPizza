@@ -6,7 +6,8 @@
 		DEFAULTS = {
 			// manifest version in case I want to add stuff later
 			version: 1,
-			toggleClass: "pizza"
+			toggleClass: "pizza",
+			elementExpression: "body"
 		};
 
 	function loadAll(callback) {
