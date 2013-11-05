@@ -3,7 +3,7 @@
 
 	"name": "Experimental Pizza",
 	"description": "Plugin to easily toggle a classname on an element",
-	"version": "1.21",
+	"version": "1.22",
 	"options_page": "options.html",
 
 	"permissions": [
